@@ -1,4 +1,11 @@
 AngularJS-Custom-Directives
 ===========================
 
-Creating custom directives for all browsers (Chrome, Firefox, Safari, Opera, IE 7+)
+Custom Directives for all browsers (Chrome, Firefox, Safari, Opera, IE 7+)
+
+- Alerts
+- Dialog Box
+- Accordion
+- Tabbed View
+
+and more..
