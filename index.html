@@ -1,19 +1,40 @@
-<html>
+<html id='ng-app' ng-app='fiApp'>
 <head>
 	<title>Fork Ideas - AngularJS - Custom Directives</title>
 
 	<!-- Add font-awesome library -->
-	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+	<!-- Custom Style Sheets -->
+	<link rel="stylesheet" type="text/css" href="css/fiajs.css">
 
 	<!-- Add AngularJS library -->
-	<script type="text/javascript" src="http://code.angularjs.org/1.2.3/angular.min.js"></script>
-	<script type="text/javascript" src="http://code.angularjs.org/1.2.3/angular-resource.min.js"></script>
-	<script type="text/javascript" src="http://code.angularjs.org/1.2.3/angular-route.min.js"></script>
-	<script type="text/javascript" src="http://code.angularjs.org/1.2.3/angular-cookies.min.js"></script>
-	<script type="text/javascript" src="http://code.angularjs.org/1.2.3/angular-animate.min.js"></script>
+	<!--[if lte IE 8]>
+		<script type="text/javascript" src="components/json2/json2.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="components/angularjs/1.2.3/angular.min.js"></script>
+	<script type="text/javascript" src="components/angularjs/1.2.3/angular-resource.min.js"></script>
+	<script type="text/javascript" src="components/angularjs/1.2.3/angular-route.min.js"></script>
+	<script type="text/javascript" src="components/angularjs/1.2.3/angular-cookies.min.js"></script>
+	<script type="text/javascript" src="components/angularjs/1.2.3/angular-animate.min.js"></script>
+
+	<!-- Custom Modules -->
+	<script type="text/javascript" src="js/fiajs.js"></script>
+	<script type="text/javascript" src="MainController.js"></script>
 </head>
-<body>
-	<!-- Initialize Application with RequireJS -->
-	<script src="lib/requirejs/require.js" data-main="Main"></script>
+<body ng-controller="MainController">
+	<div class="section">
+		<div fi-button ng-click="Button.buttonClick()">Click Me!</div>
+	</div>
+	<div class="section">
+		<div fi-menu-bar>
+			<div fi-menu-item menu-item-seperator ng-repeat="menuItem in MenuBar.menuItems" menu-item="menuItem" ng-class="{ 'active': menuItem.selectedMenu }">
+				{{ menuItem.displayName }}
+			</div>
+		</div>
+	</div>
+	<div class="section">
+		
+	</div>
 </body>
 </html>
