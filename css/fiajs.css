@@ -20,12 +20,15 @@
 	margin-top: 20px;
 }
 
+/* Button */
 .normal-button {
 	width: 100px;
+	display: inline-block;
 	text-align: center;
 	border: 1px;
 	border-style: solid;
 	padding: 1px;
+	cursor: default;
 }
 
 .normal-button:hover {
@@ -40,6 +43,7 @@
 	padding: 0px;
 }
 
+/* Menu Bar */
 .menu-bar {
 	/* Menu Bar Line */
 	border-top: 1px;
@@ -86,4 +90,56 @@
 	border-bottom: 0px;
 	border-style: solid;
 	border-color: #666666;
+}
+
+/* Icons */
+.big-icon {
+	font-size: 40px;
+	padding: 20px;
+	float: left;
+}
+
+.small-icon {
+	font-size: 18px;
+}
+
+/* Messages for Alert and Notification */
+.message {
+	width: 220px;
+	display: inline-block;
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+/* Alert */
+.alert-box {
+	width: 300px;
+	height: 120px;
+	border: 1px;
+	border-style: solid;
+	border-color: #999999;
+	text-align: center;
+}
+
+.alert-info {
+	width: 100%;
+	height: 60px;
+}
+
+.alert-acceptor {
+	width: 100%;
+	height: 35px;
+}
+
+.alert-acceptor .normal-button {
+	margin-top: 5px;
+}
+
+/* Dialog */
+.dialog-header, .alert-header {
+	width: 100%;
+	height: 20px;
+	padding-top: 3px;
+	padding-bottom: 2px;
+	background: #dddddd;
 }
