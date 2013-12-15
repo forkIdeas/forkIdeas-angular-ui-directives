@@ -3,7 +3,9 @@ forkIdeas-angular-ui-directives
 
 Custom Directives for all browsers (Chrome, Firefox, Safari, Opera, IE 7+)
 
-- Alerts
+- Button
+- Menu Bar
+- Alert Box
 - Dialog Box
 - Accordion
 - Tabbed View
