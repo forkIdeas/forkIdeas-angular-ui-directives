@@ -1,8 +1,8 @@
-var MainController = function ($scope, $window, $filter) {
+var MainController = function ($scope, $window, $filter, fiAlertService) {
 	// Button Control
 	$scope.Button = {
 		buttonClick: function () {
-			$window.alert('You Clicked Me!');
+			fiAlertService.alert('You Clicked Me!');
 		}
 	};
 
@@ -26,6 +26,13 @@ var MainController = function ($scope, $window, $filter) {
 		var selectedMenuItem = $filter('filter')($scope.MenuBar.menuItems, { selectedMenu: true })[0];
 		$window.alert('Clicked ' + selectedMenuItem.displayName);
 	});
+
+	// Alert Control
+	$scope.Alert = {
+		buttonClick: function () {
+			fiAlertService.alert("You are alerted!");
+		}
+	};
 }
 
 angular.module('fiApp', ['fi'])

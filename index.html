@@ -20,7 +20,8 @@
 	<script type="text/javascript" src="components/angularjs/1.2.3/angular-animate.min.js"></script>
 
 	<!-- Custom Modules -->
-	<script type="text/javascript" src="js/fiajs.js"></script>
+	<script type="text/javascript" src="js/fidirectives.js"></script>
+	<script type="text/javascript" src="js/fiservices.js"></script>
 	<script type="text/javascript" src="MainController.js"></script>
 </head>
 <body ng-controller="MainController">
@@ -35,7 +36,7 @@
 		</div>
 	</div>
 	<div class="section">
-
+		<div fi-button ng-click="Alert.buttonClick()">Alert</div>
 	</div>
 </body>
 </html>
