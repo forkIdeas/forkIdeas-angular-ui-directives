@@ -1,5 +1,5 @@
-AngularJS-Custom-Directives
-===========================
+forkIdeas-angular-ui-directives
+===============================
 
 Custom Directives for all browsers (Chrome, Firefox, Safari, Opera, IE 7+)
 
