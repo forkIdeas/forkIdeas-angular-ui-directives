@@ -1,4 +1,4 @@
-var MainController = function ($scope, $window) {
+var MainController = function ($scope, $window, $filter) {
 	// Button Control
 	$scope.Button = {
 		buttonClick: function () {
@@ -21,6 +21,11 @@ var MainController = function ($scope, $window) {
 			}
 		]
 	};
+
+	$scope.$on('event:menuItemChanged', function () {
+		var selectedMenuItem = $filter('filter')($scope.MenuBar.menuItems, { selectedMenu: true })[0];
+		$window.alert('Clicked ' + selectedMenuItem.displayName);
+	});
 }
 
 angular.module('fiApp', ['fi'])

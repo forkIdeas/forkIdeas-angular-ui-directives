@@ -23,7 +23,7 @@ fi.directive.fiButton = function () {
 	return fiButtonDirective;
 };
 
-fi.directive.fiMenuBar = function ($window) {
+fi.directive.fiMenuBar = function ($window, $rootScope) {
 	var fiMenuBarDirective = extend({}, directiveDefaults);
 
 	fiMenuBarDirective.template = '  <div class="menu-bar">' +
@@ -31,8 +31,9 @@ fi.directive.fiMenuBar = function ($window) {
 								  '    </ul>' +
 								  '  </div>';
 
-	fiMenuBarDirective.controller = function () {
-		var menuItems = [];
+	fiMenuBarDirective.controller = function ($scope, $element, $attrs) {
+		var menuItems = [],
+			elementId = $element.attr('id');
 
 		this.gotSelected = function (selectedMenuItem) {
 			forEach(menuItems, function (menuItem) {
@@ -42,6 +43,8 @@ fi.directive.fiMenuBar = function ($window) {
 					menuItem.selectedMenu = true;
 				}
 			});
+
+			$rootScope.$broadcast('event:menuItemChanged' + (elementId ? '-' + elementId : ''));
 		};
 
 		this.addMenuItem = function (menuItem) {
