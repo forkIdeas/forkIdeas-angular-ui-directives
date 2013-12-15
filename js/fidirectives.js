@@ -16,10 +16,8 @@
  */
 
 var fi = {
-	controller: {},
 	directive: {},
 	serviceFactory: {},
-	filter: {}
 };
 
 var extend = angular.extend,
@@ -97,5 +95,68 @@ fi.directive.fiMenuItem = function ($window) {
 	return fiMenuItemDirective;
 };
 
+fi.directive.fiAlertBox = function ($window, fiAlertService) {
+	var fiAlertBoxDirective = extend({}, directiveDefaults);
+
+	fiAlertBoxDirective.template = '  <div class="alert-box">' +
+								   '    <div class="alert-header">' +
+								   '      <i class="fa fa-exclamation-triangle small-icon"></i> <span>Alert Message</span>' +
+								   '    </div>' +
+								   '    <div class="alert-info">' +
+								   '      <div class="message" ng-transclude>' +
+								   '      </div>' +
+								   '    </div>' +
+								   '    <div class="alert-acceptor">' +
+								   '      <div fi-button ng-click="done()">OK</div>' +
+								   '    </div>' +
+								   '  </div>';
+
+	fiAlertBoxDirective.link = function (scope, element, attrs) {
+		scope.done = function () {
+			fiAlertService.clearAlert(attrs.id);
+		};
+	};
+
+	return fiAlertBoxDirective;
+};
+
+// Alert Box Directive's Service.
+fi.serviceFactory.fiAlertService = function ($window, md5Service, dynamicViewService) {
+	var alertService = {};
+
+	alertService.pendingAlerts = [];
+	alertService.alerting = false;
+
+	alertService.alert = function (message) {
+		var alertElement,
+			uniqueId = md5Service.createHash((new Date()).toString() + ':' + message);
+
+		alertElement = '<div id="' + uniqueId + '" fi-alert-box>' + message + '</div>';
+		alertService.pendingAlerts.push({
+			id: uniqueId,
+			element: alertElement
+		});
+		alertService.fireAlert();
+	};
+
+	alertService.fireAlert = function () {
+		if (alertService.pendingAlerts.length === 0 || alertService.alerting)
+			return;
+
+		alertService.alerting = true;
+		var alertObject = alertService.pendingAlerts.shift();
+		dynamicViewService.createElement(alertObject.id, angular.element(alertObject.element), angular.element($window.document.body));
+	};
+
+	alertService.clearAlert = function (id) {
+		dynamicViewService.removeElement(id);
+		alertService.alerting = false;
+		alertService.fireAlert();
+	};
+
+	return alertService;
+};
+
 angular.module('fi', [])
-	.directive(fi.directive);
+	.directive(fi.directive)
+	.factory(fi.serviceFactory);
