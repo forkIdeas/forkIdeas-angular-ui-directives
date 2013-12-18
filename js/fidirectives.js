@@ -32,7 +32,7 @@ var extend = angular.extend,
 fi.directive.fiButton = function () {
 	var fiButtonDirective = extend({}, directiveDefaults);
 
-	fiButtonDirective.template = '  <div class="normal-button" ng-transclude>' +
+	fiButtonDirective.template = '  <div class="normal-button" tabindex="100" ng-transclude>' +
 								 '  </div>';
 
 	return fiButtonDirective;
@@ -120,6 +120,14 @@ fi.directive.fiAlertBox = function ($window, fiAlertService) {
 	return fiAlertBoxDirective;
 };
 
+fi.directive.fiHideScreen = function () {
+	var fiHideScreenDirective = extend({}, directiveDefaults);
+
+	fiHideScreenDirective.template = '<div class="hide-screen"></div>';
+
+	return fiHideScreenDirective;
+}
+
 // Alert Box Directive's Service.
 fi.serviceFactory.fiAlertService = function ($window, md5Service, dynamicViewService) {
 	var alertService = {};
@@ -131,7 +139,7 @@ fi.serviceFactory.fiAlertService = function ($window, md5Service, dynamicViewSer
 		var alertElement,
 			uniqueId = md5Service.createHash((new Date()).toString() + ':' + message);
 
-		alertElement = '<div id="' + uniqueId + '" fi-alert-box>' + message + '</div>';
+		alertElement = '<div fi-hide-screen></div><div id="' + uniqueId + '" fi-alert-box>' + message + '</div>';
 		alertService.pendingAlerts.push({
 			id: uniqueId,
 			element: alertElement
@@ -149,7 +157,8 @@ fi.serviceFactory.fiAlertService = function ($window, md5Service, dynamicViewSer
 	};
 
 	alertService.clearAlert = function (id) {
-		dynamicViewService.removeElement(id);
+		dynamicViewService.removeElementById(id);
+		dynamicViewService.removeElementsByClass('hide-screen');
 		alertService.alerting = false;
 		alertService.fireAlert();
 	};

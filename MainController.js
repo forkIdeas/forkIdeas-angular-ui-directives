@@ -1,4 +1,4 @@
-var MainController = function ($scope, $window, $filter, fiAlertService) {
+var MainController = function ($scope, $filter, fiAlertService) {
 	// Button Control
 	$scope.Button = {
 		buttonClick: function () {
@@ -24,7 +24,7 @@ var MainController = function ($scope, $window, $filter, fiAlertService) {
 
 	$scope.$on('event:menuItemChanged', function () {
 		var selectedMenuItem = $filter('filter')($scope.MenuBar.menuItems, { selectedMenu: true })[0];
-		$window.alert('Clicked ' + selectedMenuItem.displayName);
+		fiAlertService.alert('Clicked ' + selectedMenuItem.displayName);
 	});
 
 	// Alert Control

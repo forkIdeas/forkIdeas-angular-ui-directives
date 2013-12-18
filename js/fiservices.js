@@ -232,19 +232,18 @@ fi.serviceFactory.md5Service = function () {
 fi.serviceFactory.dynamicViewService = function ($window, $compile, $rootScope) {
 	var dynamicView = {};
 
-	dynamicView.views = {};
-
 	dynamicView.createElement = function (id, element, targetElement) {
-        dynamicView.views[id] = true;
         targetElement.append(element);
         $compile(element)($rootScope.$new());
 	};
 	
-	dynamicView.removeElement = function (id) {
+	dynamicView.removeElementById = function (id) {
         angular.element($window.document.getElementById(id)).remove();
-        delete dynamicView.views[id];
 	};
 
+	dynamicView.removeElementsByClass = function (className) {
+		angular.element($window.document.getElementsByClassName(className)).remove();
+	}
 	return dynamicView;
 };
 
