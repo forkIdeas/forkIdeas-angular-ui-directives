@@ -232,7 +232,7 @@ fi.serviceFactory.md5Service = function () {
 fi.serviceFactory.dynamicViewService = function ($window, $compile, $rootScope) {
 	var dynamicView = {};
 
-	dynamicView.createElement = function (id, element, targetElement) {
+	dynamicView.createElement = function (element, targetElement) {
         targetElement.append(element);
         $compile(element)($rootScope.$new());
 	};
