@@ -128,8 +128,45 @@ fi.directive.fiHideScreen = function () {
 	return fiHideScreenDirective;
 }
 
+// Hide Screen Directive's Service.
+fi.serviceFactory.fiHideScreenService = function ($window, dynamicViewService) {
+	var hideScreenService = {};
+
+	hideScreenService.hideCount = 0;
+	hideScreenService.hideScreenFlag = false;
+
+	hideScreenService.hideScreen = function () {
+		if (hideScreenService.hideScreenFlag) {
+			hideScreenService.hideCount++;
+			return;
+		}
+
+		var hideScreenElement = '<div id="hideScreen" fi-hide-screen></div>';
+		dynamicViewService.createElement(angular.element(hideScreenElement), angular.element($window.document.body));
+		hideScreenService.hideScreenFlag = true;
+		hideScreenService.hideCount = 1;
+	};
+
+	hideScreenService.showScreen = function () {
+		if (hideScreenService.hideScreenFlag && hideScreenService.hideCount > 1) {
+			hideScreenService.hideCount--;
+			return;
+		}
+
+		if (hideScreenService.hideScreenFlag) {
+			dynamicViewService.removeElementById("hideScreen");
+			hideScreenService.hideScreenFlag = false;
+			hideScreenService.hideCount = 0;
+		}
+
+		return;
+	}
+
+	return hideScreenService;
+};
+
 // Alert Box Directive's Service.
-fi.serviceFactory.fiAlertService = function ($window, md5Service, dynamicViewService) {
+fi.serviceFactory.fiAlertService = function ($window, md5Service, dynamicViewService, fiHideScreenService) {
 	var alertService = {};
 
 	alertService.pendingAlerts = [];
@@ -139,7 +176,7 @@ fi.serviceFactory.fiAlertService = function ($window, md5Service, dynamicViewSer
 		var alertElement,
 			uniqueId = md5Service.createHash((new Date()).toString() + ':' + message);
 
-		alertElement = '<div fi-hide-screen></div><div id="' + uniqueId + '" fi-alert-box>' + message + '</div>';
+		alertElement = '<div id="' + uniqueId + '" fi-alert-box>' + message + '</div>';
 		alertService.pendingAlerts.push({
 			id: uniqueId,
 			element: alertElement
@@ -153,12 +190,13 @@ fi.serviceFactory.fiAlertService = function ($window, md5Service, dynamicViewSer
 
 		alertService.alerting = true;
 		var alertObject = alertService.pendingAlerts.shift();
-		dynamicViewService.createElement(alertObject.id, angular.element(alertObject.element), angular.element($window.document.body));
+		fiHideScreenService.hideScreen();
+		dynamicViewService.createElement(angular.element(alertObject.element), angular.element($window.document.body));
 	};
 
 	alertService.clearAlert = function (id) {
 		dynamicViewService.removeElementById(id);
-		dynamicViewService.removeElementsByClass('hide-screen');
+		fiHideScreenService.showScreen();
 		alertService.alerting = false;
 		alertService.fireAlert();
 	};
