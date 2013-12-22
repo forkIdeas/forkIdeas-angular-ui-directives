@@ -33,6 +33,28 @@ var MainController = function ($scope, $filter, fiAlertService) {
 			fiAlertService.alert("You are alerted!");
 		}
 	};
+
+	$scope.Accordion = {};
+
+	$scope.Accordion.Vertical = {
+		Items: [
+			{
+				title: 'Title 1',
+				summary: 'Summary 1',
+				body: 'Body 1'
+			},
+			{
+				title: 'Title 2',
+				summary: 'Summary 2',
+				body: 'Body 2'
+			},
+			{
+				title: 'Title 3',
+				summary: 'Summary 3',
+				body: 'Body 3'
+			}
+		]
+	};
 }
 
 angular.module('fiApp', ['fi'])
