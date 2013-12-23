@@ -174,7 +174,10 @@
 }
 
 .accordion {
-	border: 1px;
+	border-top: 1px;
+	border-bottom: 1px;
+	border-left: 0px;
+	border-right: 0px;
 	border-style: solid;
 	border-color: #999999;
 }
@@ -186,6 +189,7 @@
 
 .vertical .accordion-item {
 	display: inline-block;
+	padding-right: 2px;
 }
 
 .accordion-item-title {
