@@ -40,7 +40,7 @@
 		<div fi-button ng-click="Alert.buttonClick()">Alert</div>
 	</div>
 	<div class="section">
-		<div fi-accordion>
+		<div fi-accordion accordion-type="vertical">
 			<div fi-accordion-item ng-repeat="accordionItem in Accordion.Vertical.Items" accordion-item="accordionItem" accordion-title="accordionItem.title">
 				<div fi-accordion-item-summary> {{ accordionItem.summary }} </div>
 				{{ accordionItem.body }}
