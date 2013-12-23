@@ -20,6 +20,10 @@
 	margin-top: 20px;
 }
 
+.ng-scope {
+	font-family: ubuntu, sans-serif;
+}
+
 /* Button */
 .normal-button {
 	width: 100px;
@@ -148,7 +152,7 @@
 	height: 20px;
 	padding-top: 3px;
 	padding-bottom: 2px;
-	background: #dddddd;
+	background: #cccccc;
 }
 
 /* Hide Screen */
@@ -167,4 +171,62 @@
 	top: 0px;
 	left: 0px;
 	z-index: 1000;
+}
+
+.accordion {
+	border-top: 1px;
+	border-bottom: 1px;
+	border-left: 0px;
+	border-right: 0px;
+	border-style: solid;
+	border-color: #999999;
+}
+
+.horizontal .accordion-item {
+	width: 100%;
+	display: inline-block;
+}
+
+.vertical .accordion-item {
+	display: inline-block;
+	padding-right: 2px;
+}
+
+.accordion-item-title {
+	width: 100%;
+	padding-top: 3px;
+	padding-bottom: 2px;
+	background: #cccccc;
+}
+
+.accordion-item-title span {
+	padding-left: 5px;
+}
+
+.accordion-item-title:after {
+	position: relative;
+	padding-right: 5px;
+	content: "\f105";
+	font-family: FontAwesome;
+	float: right;
+}
+
+.expanded.accordion-item-title:after {
+	position: relative;
+	padding-right: 5px;
+	content: "\f107";
+	font-family: FontAwesome;
+	float: right;
+}
+
+.accordion-item-summary-view {
+	width: 100%;
+	background: #eeeeee;
+	font-size: 14px;
+}
+
+.accordion-item-summary, .accordion-item-body {
+	padding-left: 5px;
+	padding-top: 3px;
+	padding-bottom: 2px;
 }

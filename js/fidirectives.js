@@ -17,7 +17,7 @@
 
 var fi = {
 	directive: {},
-	serviceFactory: {},
+	serviceFactory: {}
 };
 
 var extend = angular.extend,
@@ -127,6 +127,111 @@ fi.directive.fiHideScreen = function () {
 
 	return fiHideScreenDirective;
 }
+
+fi.directive.fiAccordion = function ($window, $rootScope) {
+	var fiAccordionDirective = extend({}, directiveDefaults);
+
+	fiAccordionDirective.scope = {
+		accordionType: '@accordionType'
+	};
+
+	fiAccordionDirective.template = '  <div class="accordion" ng-transclude>' +
+									'  </div>';
+
+	fiAccordionDirective.link = function (scope, element, attrs) {
+		if (scope.accordionType === 'vertical') {
+			element.addClass('vertical');
+		} else {
+			element.addClass('horizontal');
+		}
+	};
+
+	fiAccordionDirective.controller = function ($scope, $element, $attrs) {
+		var accordionItems = [],
+			elementId = $element.attr('id');
+
+		this.gotSelected = function (selectedAccordionItem) {
+			forEach(accordionItems, function (accordionItem) {
+				if (selectedAccordionItem != accordionItem) {
+					accordionItem.selectedItem = false;
+				}
+			});
+
+			$rootScope.$broadcast('event:accordionItemChanged' + (elementId ? '-' + elementId : ''));
+		};
+
+		this.addAccordionItem = function (accordionItem) {
+			accordionItems.push(accordionItem);
+		};
+	};
+
+	return fiAccordionDirective;
+};
+
+fi.directive.fiAccordionItem = function ($window, $compile) {
+	var fiAccordionItemDirective = extend({}, directiveDefaults);
+
+	fiAccordionItemDirective.require = '^?fiAccordion';
+	fiAccordionItemDirective.scope = {
+		title: '=accordionTitle',
+		accordionItem: '=accordionItem'
+	};
+
+	fiAccordionItemDirective.template = '  <div class="accordion-item">' +
+										'    <div class="accordion-item-head" ng-click="selectAccordionItem()">' +
+										'      <div class="accordion-item-title" ng-class="{ expanded: accordionItem.selectedItem }">' +
+										'        <span>{{ title }}</span>' +
+										'      </div>' + 
+										'      <div class="accordion-item-summary-view" ng-show="hasSummary">' +
+										'      </div>' +
+										'    </div>' +
+										'    <div class="accordion-item-body" ng-show="accordionItem.selectedItem">' +
+										'    </div>' +
+										'    <span ng-transclude class="ng-hide">' +
+										'    </span>' +
+										'  </div>';
+
+	fiAccordionItemDirective.link = function (scope, element, attrs, fiAccordionController) {
+		var transcludedElements = element.find("span").children();
+		var includedSummary = false;
+
+		scope.hasSummary = false;
+		scope.accordionItem.selectedItem = false;
+
+		forEach(transcludedElements, function (transcludedElement) {
+			transcludedElement = angular.element(transcludedElement);
+
+			if (transcludedElement.hasClass("accordion-item-summary") && !includedSummary) {
+				scope.hasSummary = true;
+				includedSummary = true;
+				var itemSummaryViewElement = angular.element(angular.element(element.children()[0]).children()[1]);
+				itemSummaryViewElement.append(transcludedElement);
+			} else if (!transcludedElement.hasClass("accordion-item-summary")) {
+				var itemBodyElement = angular.element(element.children()[1]);
+				itemBodyElement.append(transcludedElement);
+			}
+		});
+
+		fiAccordionController.addAccordionItem(scope.accordionItem);
+
+		scope.selectAccordionItem = function () {
+			fiAccordionController.gotSelected(scope.accordionItem);
+			scope.accordionItem.selectedItem = !scope.accordionItem.selectedItem;
+		};
+	};
+
+	return fiAccordionItemDirective;
+};
+
+fi.directive.fiAccordionItemSummary = function ($window) {
+	var fiAccordionItemSummaryDirective = extend({}, directiveDefaults);
+
+	fiAccordionItemSummaryDirective.require = '^?fiAccordionItem';
+	fiAccordionItemSummaryDirective.template = '  <div class="accordion-item-summary" ng-transclude>' +
+											   '  </div>';
+
+	return fiAccordionItemSummaryDirective;
+};
 
 // Hide Screen Directive's Service.
 fi.serviceFactory.fiHideScreenService = function ($window, dynamicViewService) {
