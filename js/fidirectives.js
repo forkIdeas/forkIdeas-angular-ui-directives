@@ -233,6 +233,59 @@ fi.directive.fiAccordionItemSummary = function ($window) {
 	return fiAccordionItemSummaryDirective;
 };
 
+fi.directive.fiViewBox = function () {
+	var fiViewBoxDirective = extend({}, directiveDefaults);
+
+	fiViewBoxDirective.scope = {
+		height: '@boxHeight'
+	};
+	fiViewBoxDirective.template = '  <div class="view-box rounded-border shadow" ng-transclude>' +
+								  '  </div>';
+
+	fiViewBoxDirective.link = function (scope, element, attrs) {
+		scope.height = scope.height ? scope.height : "100px";
+		element.css("height", scope.height);
+	}
+
+	return fiViewBoxDirective;
+};
+
+fi.directive.fiUserImage = function () {
+	var fiUserImageDirective = extend({}, directiveDefaults);
+
+	fiUserImageDirective.template = '  <div class="user-image">' +
+									'    <div fi-view-box box-width="150px" box-height="150px">' +
+									'      <div ng-show="hasImage">' +
+									'      </div>' +
+									'      <div ng-hide="hasImage">' +
+									'        <i class="fa fa-user" style="font-size: 150px; color: #999999; padding-left: 16px; padding-right: 16px;"></i>' +
+									'      </div>' +
+									'    </div>' +
+									'  </div>';
+
+	return fiUserImageDirective;
+};
+
+fi.directive.fiEmail = function () {
+	var fiEmailDirective = extend({}, directiveDefaults);
+
+	fiEmailDirective.template = '  <div>' +
+								'    <i class="fa fa-envelope"></i> <span ng-transclude></span>' +
+								'  </div>';
+
+	return fiEmailDirective;
+};
+
+fi.directive.fiPhone = function () {
+	var fiPhoneDirective = extend({}, directiveDefaults);
+
+	fiPhoneDirective.template = '  <div>' +
+								'    <i class="fa fa-phone"></i> <span ng-transclude></span>' +
+								'  </div>';
+
+	return fiPhoneDirective;
+};
+
 // Hide Screen Directive's Service.
 fi.serviceFactory.fiHideScreenService = function ($window, dynamicViewService) {
 	var hideScreenService = {};
