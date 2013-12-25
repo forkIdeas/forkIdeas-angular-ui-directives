@@ -9,7 +9,7 @@
 	<!-- Custom Style Sheets -->
 	<link rel="stylesheet" type="text/css" href="css/fiajs.css">
 
-	<script src="http://use.edgefonts.net/ubuntu.js"></script>
+	<script src="http://use.edgefonts.net/open-sans;actor.js"></script>
 	<!-- Add AngularJS library -->
 	<!--[if lte IE 8]>
 		<script type="text/javascript" src="components/json2/json2.js"></script>
@@ -40,11 +40,26 @@
 		<div fi-button ng-click="Alert.buttonClick()">Alert</div>
 	</div>
 	<div class="section">
-		<div fi-accordion accordion-type="vertical">
+		<div fi-accordion accordion-type="horizontal">
 			<div fi-accordion-item ng-repeat="accordionItem in Accordion.Vertical.Items" accordion-item="accordionItem" accordion-title="accordionItem.title">
-				<div fi-accordion-item-summary> {{ accordionItem.summary }} </div>
+<!--				<div fi-accordion-item-summary> {{ accordionItem.summary }} </div> -->
 				{{ accordionItem.body }}
 			</div>
+		</div>
+	</div>
+	<div class="section">
+		<div fi-view-box box-height="200px">
+			This is a view box.
+		</div>
+	</div>
+	<div class="section">
+		<div fi-user-image style="float:right; margin-left:10px;"></div>
+ 		<div fi-view-box box-height="150px">
+			<div><span style="font-size: 26px;">Jayaprakash</span></div>
+			<div><span>Senior Software Engineer, Athenahealth</span></div>
+			<div><span>Chennai</span></div>
+			<div fi-email>prakashjp.h@gmail.com</div>
+			<div fi-phone>9677709330</div>
 		</div>
 	</div>
 </body>
