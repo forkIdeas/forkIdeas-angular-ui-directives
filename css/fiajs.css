@@ -15,6 +15,8 @@
  *
  */
 
+@import url(http://fonts.googleapis.com/css?family=Open+Sans|Actor);
+
 .section {
 	margin: 20px auto;
 	width: 80%;
@@ -22,7 +24,9 @@
 }
 
 .ng-scope {
-	font-family: open-sans, actor, sans-serif;
+/*	font-family: open-sans, actor, sans-serif;		*/
+	font-family: 'Open Sans', 'Actor', sans-serif;
+	font-size: 14px;
 }
 
 /* Button */
@@ -195,6 +199,7 @@
 	padding-bottom: 2px;
 	border-bottom: solid 1px #eeeeee;
 	background: #cccccc;
+	cursor: pointer;
 }
 
 .accordion-item-title span {
@@ -253,4 +258,16 @@
 .user-image {
 	display: inline-block;
 	margin-top: -10px;
+}
+
+.summary-seperator {
+	border-bottom: dashed 1px #999;
+}
+
+.summary-details {
+	padding: 5px;
+}
+
+.summary-title {
+	font-size: 20px;
 }
