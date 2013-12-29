@@ -243,7 +243,7 @@ fi.directive.fiViewBox = function () {
 								  '  </div>';
 
 	fiViewBoxDirective.link = function (scope, element, attrs) {
-		scope.height = scope.height ? scope.height : "100px";
+		scope.height = scope.height ? scope.height : "auto";
 		element.css("height", scope.height);
 	}
 
@@ -253,15 +253,24 @@ fi.directive.fiViewBox = function () {
 fi.directive.fiUserImage = function () {
 	var fiUserImageDirective = extend({}, directiveDefaults);
 
+	fiUserImageDirective.scope = {
+		imageURL: '@userImageUrl'
+	};
+
 	fiUserImageDirective.template = '  <div class="user-image">' +
 									'    <div fi-view-box box-width="150px" box-height="150px">' +
 									'      <div ng-show="hasImage">' +
+									'        <img src="" width="150px" height="150px" />' +
 									'      </div>' +
 									'      <div ng-hide="hasImage">' +
 									'        <i class="fa fa-user" style="font-size: 150px; color: #999999; padding-left: 16px; padding-right: 16px;"></i>' +
 									'      </div>' +
 									'    </div>' +
 									'  </div>';
+
+	fiUserImageDirective.link = function (scope, element, attrs) {
+		scope.hasImage = (scope.imageURL ? true : false);
+	};
 
 	return fiUserImageDirective;
 };
