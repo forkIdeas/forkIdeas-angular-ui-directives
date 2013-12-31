@@ -295,6 +295,47 @@ fi.directive.fiPhone = function () {
 	return fiPhoneDirective;
 };
 
+fi.directive.fiDialogBox = function () {
+    var fiDialogBoxDirective = extend({}, directiveDefaults);
+    
+    fiDialogBoxDirective.scope = {
+        responseButtons: '@responseButtons',
+        width: '@dialogWidth',
+        height: '@dialogHeight'
+    };
+    
+    fiDialogBoxDirective.template = '  <div class="dialog-box">' +
+                                    '    <div class="dialog-header">' +
+                                    '    </div>' +
+                                    '    <div class="dialog-body" ng-transclude>' +
+                                    '    </div>' +
+                                    '    <div class="dialog-footer">' +
+                                    '      <div ng-show="true" id="dialog-cd-buttons">' +
+                                    '        <div fi-button>Cancel</div>' +
+                                    '        <div fi-button>Done</div>' +
+                                    '      </div>' +
+                                    '      <div ng-show="true" id="dialog-cnd-buttons">' +
+                                    '        <div fi-button>Cancel</div>' +
+                                    '        <div fi-button>Next</div>' +
+                                    '        <div fi-button>Done</div>' +
+                                    '      </div>' +
+                                    '      <div ng-show="true" id="dialog-yesno-buttons">' +
+                                    '        <div fi-button>Yes</div>' +
+                                    '        <div fi-button>No</div>' +
+                                    '      </div>' +
+                                    '    </div>' +
+                                    '  </div>';
+    
+    fiDialogBoxDirective.link = function (scope, element, attrs) {
+        scope.width = scope.width || '400px';
+        scope.height = scope.height || '200px';
+        element.css("width", scope.width);
+        element.css("height", scope.height);
+    };
+    
+    return fiDialogBoxDirective;
+};
+
 // Hide Screen Directive's Service.
 fi.serviceFactory.fiHideScreenService = function ($window, dynamicViewService) {
 	var hideScreenService = {};
