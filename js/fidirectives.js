@@ -22,6 +22,8 @@ var fi = {
 
 var extend = angular.extend,
 	forEach = angular.forEach,
+    copy = angular.copy,
+    fiMinErr = angular.$$minErr,
 	directiveDefaults = {
 		restrict: 'EA',
 		replace: true,
@@ -32,8 +34,11 @@ var extend = angular.extend,
 fi.directive.fiButton = function () {
 	var fiButtonDirective = extend({}, directiveDefaults);
 
-	fiButtonDirective.template = '  <div class="normal-button" tabindex="100" ng-transclude>' +
-								 '  </div>';
+    fiButtonDirective.scope = {
+        buttonText: '@buttonText'
+    };
+    
+	fiButtonDirective.template = '  <input type="button" class="normal-button" tabindex="100" value="{{buttonText}}" />';
 
 	return fiButtonDirective;
 };
@@ -293,6 +298,208 @@ fi.directive.fiPhone = function () {
 								'  </div>';
 
 	return fiPhoneDirective;
+};
+
+fi.directive.fiForm = function ($window, $compile) {
+    var fiFormDirective = extend({}, directiveDefaults);
+    
+    fiFormDirective.scope = {
+        formName: '@formName',
+        formButtons: '@formButtons',
+        formSubmitAction: '&formSubmitAction',
+        formCancelAction: '&formCancelAction',
+        formNextAction: '&formNextAction'
+    };
+    
+    fiFormDirective.template = '  <div class="form">' +
+                               '    <div class="form-elements" ng-transclude>' +
+                               '    </div>' +
+                               '    <div class="form-buttons">' +
+                               '    </div>' +
+                               '  </div>';
+    
+    fiFormDirective.link = function (scope, element, attrs, controller) {
+        var buttonsParent = angular.element(element.children()[1]);
+        var buttons;
+        
+        if (!scope.formName) throw 'form-name attribute is required';
+        
+        if (scope.hasMultipleViews) {
+            buttons = angular.element('<div fi-button button-text="Cancel" ng-click="cancel()"></div><div fi-button button-text="Next" ng-click="next()"></div><div fi-button button-text="Submit" ng-click="submit()"></div>');
+            buttons = $compile(buttons)(scope);
+        } else {
+            buttons = angular.element('<div fi-button button-text="Cancel" ng-click="cancel()"></div><div fi-button button-text="Submit" ng-click="submit()"></div>');
+            buttons = $compile(buttons)(scope);
+        }
+        
+        scope.cancel = function () {
+            if (scope.formCancelAction) scope.formCancelAction();
+        };
+        
+        scope.next = function () {
+            controller.validateRequired();
+            if (scope.formNextAction) scope.formNextAction();
+        };
+        
+        scope.submit = function () {
+            $window.console.log(controller.validateRequired(true));
+            if (scope.formSubmitAction) scope.formSubmitAction();
+        }
+        
+        buttonsParent.append(buttons);
+    };
+    
+    fiFormDirective.controller = function ($scope, $element, $attrs) {
+        $scope.requiredElements = [];
+        $scope.hasMultipleViews = false;
+        $scope.formViews = [];
+        $scope.currentView = undefined;
+        
+        this.addRequiredElements = function (requiredElement) {
+            $scope.requiredElements.push(requiredElement);
+        };
+        
+        this.validateRequired = function (entireForm) {
+            var requiredElementsInViews = {};
+            forEach($scope.requiredElements, function (element) {
+                var parentName = element.parent().attr("form-view-name");
+                if (requiredElementsInViews[parentName] === undefined) requiredElementsInViews[parentName] = [];
+                requiredElementsInViews[parentName].push(element);
+            });
+            
+            var views = entireForm ? $scope.formViews : [ $scope.currentView ];
+            var success = true;
+            
+            forEach(views, function (view) {
+                var viewName = view.attr("form-view-name");
+                var elements = requiredElementsInViews[viewName];
+                forEach(elements, function (element) {
+                    $window.console.log(element.val());
+                    if (!element.val()) success = false;
+                });
+            });
+            
+            return success;
+        };
+        
+        this.addViews = function (formViewElement) {
+//            $window.alert(formViewElement);
+            $scope.formViews.push(formViewElement);
+            if ($scope.formViews.length > 1) $scope.hasMultipleViews = true;
+            if ($scope.currentView === undefined) $scope.currentView = formViewElement;
+        };
+    };
+    
+    return fiFormDirective;
+};
+
+fi.directive.fiFormView = function ($window) {
+    var fiFormViewDirective = extend({}, directiveDefaults);
+    
+    fiFormViewDirective.scope = {
+        formViewName: '@formViewName'
+    };
+    
+    fiFormViewDirective.require = '^?fiForm';
+    
+    fiFormViewDirective.template = '  <div ng-transclude></div>';
+    
+    fiFormViewDirective.link = function (scope, element, attrs, fiFormController) {
+        if (!scope.formViewName) throw 'form-view-name attribute is required';
+        fiFormController.addViews(element);
+    };
+    
+    return fiFormViewDirective;
+};
+
+fi.directive.fiInputTextarea = function ($window, fiPlaceHolderService) {
+    var fiInputEmailDirective = extend({}, directiveDefaults);
+
+    fiInputEmailDirective.require = '^?fiForm';
+    
+    fiInputEmailDirective.scope = {
+        inputLabel: '@label',
+        tabIndex: '@tabindex'
+    };
+    
+    fiInputEmailDirective.template = '  <div class="input">' +
+                                     '    <span class="input-label">{{inputLabel}} :</span>' +
+                                     '    <span class="input-area">' +
+                                     '      <textarea class="input-text-area" tabindex="{{tabIndex}}"></textarea>' +
+                                     '    </span>' +
+                                     '  </div>';
+    
+    fiInputEmailDirective.link = function (scope, element, attrs, fiFormController) {
+        if (!attrs.name) throw 'name attribute is required';
+        if (attrs.required) {
+            fiFormController.addRequiredElements(element);
+        }
+        
+        var inputElement = element.find('textarea');
+        fiPlaceHolderService.placeHolder(inputElement, attrs.placeholder);
+    };
+    
+    return fiInputEmailDirective;
+};
+
+fi.directive.fiInputEmail = function ($window, fiPlaceHolderService) {
+    var fiInputEmailDirective = extend({}, directiveDefaults);
+
+    fiInputEmailDirective.require = '^?fiForm';
+    
+    fiInputEmailDirective.scope = {
+        inputLabel: '@label',
+        tabIndex: '@tabindex'
+    };
+    
+    fiInputEmailDirective.template = '  <div class="input">' +
+                                     '    <span class="input-label">{{inputLabel}} :</span>' +
+                                     '    <span class="input-area">' +
+                                     '      <input class="input-email" type="text" tabindex="{{tabIndex}}" />' +
+                                     '    </span>' +
+                                     '  </div>';
+    
+    fiInputEmailDirective.link = function (scope, element, attrs, fiFormController) {
+        if (!attrs.name) throw 'name attribute is required';
+        if (attrs.required) {
+            fiFormController.addRequiredElements(element);
+        }
+        
+        var inputElement = element.find('input');
+        fiPlaceHolderService.placeHolder(inputElement, attrs.placeholder);
+    };
+    
+    return fiInputEmailDirective;
+};
+
+fi.directive.fiInputText = function ($window, fiPlaceHolderService) {
+    var fiInputTextDirective = extend({}, directiveDefaults);
+
+    fiInputTextDirective.require = '^?fiForm';
+    
+    fiInputTextDirective.scope = {
+        inputLabel: '@label',
+        tabIndex: '@tabindex'
+    };
+    
+    fiInputTextDirective.template = '  <div class="input">' +
+                                    '    <span class="input-label">{{inputLabel}} :</span>' +
+                                    '    <span class="input-area">' +
+                                    '      <input class="input-text" type="text" tabindex="{{tabIndex}}" />' +
+                                    '    </span>' +
+                                    '  </div>';
+    
+    fiInputTextDirective.link = function (scope, element, attrs, fiFormController) {
+        if (!attrs.name) throw 'name attribute is required';
+        if (attrs.required) {
+            fiFormController.addRequiredElements(element);
+        }
+        
+        var inputElement = element.find('input');
+        fiPlaceHolderService.placeHolder(inputElement, attrs.placeholder);
+    };
+    
+    return fiInputTextDirective;
 };
 
 // Hide Screen Directive's Service.
