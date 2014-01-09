@@ -247,5 +247,24 @@ fi.serviceFactory.dynamicViewService = function ($window, $compile, $rootScope) 
 	return dynamicView;
 };
 
+fi.serviceFactory.fiPlaceHolderService = function ($window) {
+    var placeHolderService = {};
+    
+    placeHolderService.hasPlaceHolderSupport = function () {
+        return ('placeholder' in $window.document.createElement('INPUT'));
+    };
+    
+    placeHolderService.placeHolder = function (element, placeholdertext) {
+        if (placeHolderService.hasPlaceHolderSupport()) {
+            element.attr("placeholder", placeholdertext);
+            return;
+        }
+        
+        return;
+    };
+    
+    return placeHolderService;
+};
+
 angular.module('fi')
 	.factory(fi.serviceFactory);
