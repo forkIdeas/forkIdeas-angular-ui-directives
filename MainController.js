@@ -1,4 +1,4 @@
-var MainController = function ($scope, $filter, fiAlertService) {
+var MainController = function ($scope, $filter, fiAlertService, fiDialogService) {
 	// Button Control
 	$scope.Button = {
 		buttonClick: function () {
@@ -33,28 +33,14 @@ var MainController = function ($scope, $filter, fiAlertService) {
 			fiAlertService.alert("You are alerted!");
 		}
 	};
-
-	$scope.Accordion = {};
-
-	$scope.Accordion.Vertical = {
-		Items: [
-			{
-				title: 'Event 1',
-				summary: 'Summary 1',
-				body: 'Body 1'
-			},
-			{
-				title: 'Event 2',
-				summary: 'Summary 2',
-				body: 'Body 2'
-			},
-			{
-				title: 'Event 3',
-				summary: 'Summary 3',
-				body: 'Body 3'
-			}
-		]
-	};
+    
+    $scope.Dialog = {
+        buttonClick: function () {
+            fiDialogService.dialog({
+                dialogTitle: 'sample'
+            });
+        }
+    };
 
 	$scope.Candidate = {
 		firstName: "Jayaprakash",
@@ -94,7 +80,7 @@ var MainController = function ($scope, $filter, fiAlertService) {
 				company: "Athenahealth",
 				location: "Chennai",
 				startDate: "March 2013",
-				endDate: "To Date"
+				endDate: "Present Date"
 			},
 			{
 				position: "Software Engineer",
@@ -141,7 +127,7 @@ var MainController = function ($scope, $filter, fiAlertService) {
 			},
 			{
 				name: "Online Programming Judge",
-				description: "Programming judge for the online programming competition conducted in the symposium 'Infoquest'."
+				description: "Programming judge for the online programming competition conducted in the symposium 'Infoquest X'."
 			},
 			{
 				name: "Campus Recruitement Tool",
@@ -149,7 +135,7 @@ var MainController = function ($scope, $filter, fiAlertService) {
 			},
 			{
 				name: "GitB",
-				description: "Tool developed to access Git repositories via browser."
+				description: "Tool developed to access Git repositories via browser using Nodejs. This is an undergoing project."
 			},
 		],
 		events: {
