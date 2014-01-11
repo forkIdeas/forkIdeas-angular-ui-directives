@@ -237,6 +237,10 @@ fi.serviceFactory.dynamicViewService = function ($window, $compile, $rootScope) 
         $compile(element)($rootScope.$new());
 	};
 	
+    dynamicView.removeElement = function (element) {
+        element.remove();
+    };
+    
 	dynamicView.removeElementById = function (id) {
         angular.element($window.document.getElementById(id)).remove();
 	};

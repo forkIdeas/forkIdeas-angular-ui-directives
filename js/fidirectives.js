@@ -300,42 +300,49 @@ fi.directive.fiPhone = function () {
 	return fiPhoneDirective;
 };
 
-fi.directive.fiDialogBox = function () {
+fi.directive.fiDialogBox = function ($compile, $window, fiDialogService) {
     var fiDialogBoxDirective = extend({}, directiveDefaults);
     
     fiDialogBoxDirective.scope = {
-        responseButtons: '@responseButtons',
         width: '@dialogWidth',
-        height: '@dialogHeight'
+        title: '@dialogTitle',
+        cancelTitle: '@cancelText',
+        doneTitle: '@doneText',
+        cancelFunction: '&dialogCancel',
+        doneFunction: '&dialogDone'
     };
     
     fiDialogBoxDirective.template = '  <div class="dialog-box">' +
                                     '    <div class="dialog-header">' +
+                                    '      {{title}}' +
                                     '    </div>' +
                                     '    <div class="dialog-body" ng-transclude>' +
                                     '    </div>' +
                                     '    <div class="dialog-footer">' +
-                                    '      <div ng-show="true" id="dialog-cd-buttons">' +
-                                    '        <div fi-button>Cancel</div>' +
-                                    '        <div fi-button>Done</div>' +
-                                    '      </div>' +
-                                    '      <div ng-show="true" id="dialog-cnd-buttons">' +
-                                    '        <div fi-button>Cancel</div>' +
-                                    '        <div fi-button>Next</div>' +
-                                    '        <div fi-button>Done</div>' +
-                                    '      </div>' +
-                                    '      <div ng-show="true" id="dialog-yesno-buttons">' +
-                                    '        <div fi-button>Yes</div>' +
-                                    '        <div fi-button>No</div>' +
+                                    '      <div class="dialog-buttons">' +
+                                    '        <div fi-button ng-click="cancel()">{{cancelTitle}}</div>' +
+                                    '        <div fi-button ng-click="done()">{{doneTitle}}</div>' +
                                     '      </div>' +
                                     '    </div>' +
                                     '  </div>';
     
     fiDialogBoxDirective.link = function (scope, element, attrs) {
-        scope.width = scope.width || '400px';
-        scope.height = scope.height || '200px';
-        element.css("width", scope.width);
-        element.css("height", scope.height);
+        scope.cancelTitle = scope.cancelTitle || 'Cancel';
+        scope.doneTitle = scope.doneTitle || 'Done';
+        scope.width = scope.width || 300;
+
+        element.css("width", scope.width + 'px');
+        scope.cancel = function () {
+            if (scope.cancelFunction)
+                scope.cancelFunction();
+            fiDialogService.clearDialog();
+        };
+        
+        scope.done = function () {
+            if (scope.doneFunction)
+                scope.doneFunction();
+            fiDialogService.clearDialog();
+        };
     };
     
     return fiDialogBoxDirective;
@@ -550,7 +557,11 @@ fi.serviceFactory.fiHideScreenService = function ($window, dynamicViewService) {
 	hideScreenService.hideCount = 0;
 	hideScreenService.hideScreenFlag = false;
 
-	hideScreenService.hideScreen = function () {
+	hideScreenService.hideScreen = function (makeTop) {
+        if (makeTop && hideScreenService.hideScreenFlag) {
+            angular.element($window.getElementById("hideScreen")).css("z-index", makeTop);
+        }
+        
 		if (hideScreenService.hideScreenFlag) {
 			hideScreenService.hideCount++;
 			return;
@@ -562,9 +573,12 @@ fi.serviceFactory.fiHideScreenService = function ($window, dynamicViewService) {
 		hideScreenService.hideCount = 1;
 	};
 
-	hideScreenService.showScreen = function () {
+	hideScreenService.showScreen = function (makeTop) {
 		if (hideScreenService.hideScreenFlag && hideScreenService.hideCount > 1) {
 			hideScreenService.hideCount--;
+            if (makeTop) {
+                angular.element($window.getElementById("hideScreen")).css("z-index", makeTop);
+            }
 			return;
 		}
 
@@ -617,6 +631,51 @@ fi.serviceFactory.fiAlertService = function ($window, md5Service, dynamicViewSer
 	};
 
 	return alertService;
+};
+
+fi.serviceFactory.fiDialogService = function ($window, md5Service, dynamicViewService, fiHideScreenService) {
+	var dialogService = {};
+
+	dialogService.dialogStack = [];
+    dialogService.dialogShown = false;
+    dialogService.topIndex = -1;
+
+	dialogService.dialog = function (dialogObject) {
+		var dialogElement;
+
+		dialogElement = $window.document.createElement('DIV');
+        dialogElement.setAttribute("fi-dialog-box", "");
+        if (dialogObject.dialogWidth) { dialogElement.setAttribute("dialog-width", dialogObject.dialogWidth); }
+        if (dialogObject.dialogTitle) { dialogElement.setAttribute("dialog-title", dialogObject.dialogTitle); }
+        if (dialogObject.cancelText) { dialogElement.setAttribute("cancel-text", dialogObject.cancelText); }
+        if (dialogObject.doneText) { dialogElement.setAttribute("done-text", dialogObject.doneText); }
+        if (dialogObject.dialogDone) { dialogElement.setAttribute("dialog-done", dialogObject.dialogDone); }
+        if (dialogObject.dialogCancel) { dialogElement.setAttribute("dialog-cancel", dialogObject.dialogCancel); }
+        
+        $window.console.log(dialogElement);
+        dialogElement = angular.element(dialogElement);
+		dialogService.dialogStack.push(dialogElement);
+        dialogService.topIndex++;
+        
+		if (dialogService.dialogStack.length === 0)
+			dialogService.dialogShown = true;
+        
+        $window.alert(dialogObject);
+		fiHideScreenService.hideScreen(1000 + ((dialogService.topIndex - 1) * 10));
+        dialogElement.css("z-index", 1005 + ((dialogService.topIndex) * 10));
+		dynamicViewService.createElement(dialogElement, angular.element($window.document.body));
+	};
+
+	dialogService.clearDialog = function () {
+        var dialogElement = dialogService.dialogStack.pop();
+        dynamicViewService.removeElement(dialogElement);
+		fiHideScreenService.showScreen(1000 + ((dialogService.topIndex - 2) * 10));
+        
+        if (dialogService.dialogStack.length === 0)
+            dialogService.dialogShown = false;
+	};
+
+	return dialogService;
 };
 
 angular.module('fi', [])
